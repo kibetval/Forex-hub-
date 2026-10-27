@@ -19,7 +19,7 @@
             <p class="text-xs text-slate-400 mt-1">Authorized Access Only. Please verify your credentials.</p>
         </div>
 
-        <div id="loginError" class="hidden bg-red-950/50 border border-red-800 text-red-400 text-xs p-3 rounded-lg text-center">
+        <div id="loginError" class="hidden bg-red-950/50 border border-red-800 text-red-400 text-xs p-3 rounded-lg text-center font-bold">
             Invalid email or password. Access Denied.
         </div>
 
@@ -41,7 +41,6 @@
                 Unlock Dashboard
             </button>
         </form>
-        <p class="text-[10px] text-center text-slate-500">Protected by Hash Authentication</p>
     </div>
 
     <!-- MAIN BOT DASHBOARD CONTAINER (Protected Content) -->
@@ -60,43 +59,35 @@
 
         <!-- YOUR HOLY BOT APPLICATION CONTENT GOES HERE -->
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center">
-            <h2 class="text-xl font-bold text-emerald-400 mb-2">HOLY BOT IS ACTIVE</h2>
-            <p class="text-sm text-slate-400">Trading Bot Interface unlocked successfully.</p>
+            <h2 class="text-xl font-bold text-emerald-400 mb-2">HOLY BOT IS UNLOCKED</h2>
+            <p class="text-sm text-slate-400">Welcome to your trading bot dashboard!</p>
         </div>
 
     </div>
 
     <script>
-        // Credentials Configuration (Email & SHA-256 Hashed Password for Security)
-        const AUTH_EMAIL = "thomsonmilton@gmail.com";
-        // Pre-calculated SHA-256 hash for "@62397526#"
-        const AUTH_PASSWORD_HASH = "f9a4bb3bd830026e7b16d1c81dbcaed810e7b8c8d8c36b6d510b642273e86c1c"; 
-
-        // Helper function to calculate SHA-256 Hash in browser
-        async function sha256(str) {
-            const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+        // Exact Credentials
+        const TARGET_EMAIL = "thomsonmilton@gmail.com";
+        const TARGET_PASS = "@62397526#";
 
         // Check Session Storage on Page Load
         document.addEventListener("DOMContentLoaded", () => {
-            const session = sessionStorage.getItem("holybot_session");
-            if (session === "authenticated") {
+            const session = sessionStorage.getItem("holybot_authenticated");
+            if (session === "true") {
                 showDashboard();
             }
         });
 
         // Form Submit Handler
-        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        document.getElementById("loginForm").addEventListener("submit", (e) => {
             e.preventDefault();
+            
             const emailInput = document.getElementById("userEmail").value.trim().toLowerCase();
-            const passwordInput = document.getElementById("userPassword").value;
+            const passwordInput = document.getElementById("userPassword").value.trim();
             const errorBox = document.getElementById("loginError");
 
-            const inputHash = await sha256(passwordInput);
-
-            if (emailInput === AUTH_EMAIL.toLowerCase() && inputHash === AUTH_PASSWORD_HASH) {
-                sessionStorage.setItem("holybot_session", "authenticated");
+            if (emailInput === TARGET_EMAIL.toLowerCase() && passwordInput === TARGET_PASS) {
+                sessionStorage.setItem("holybot_authenticated", "true");
                 errorBox.classList.add("hidden");
                 showDashboard();
             } else {
@@ -106,14 +97,14 @@
 
         // Logout Handler
         document.getElementById("logoutBtn").addEventListener("click", () => {
-            sessionStorage.removeItem("holybot_session");
+            sessionStorage.removeItem("holybot_authenticated");
             location.reload();
         });
 
         function showDashboard() {
             document.getElementById("loginScreen").classList.add("hidden-app");
             document.getElementById("mainDashboard").classList.remove("hidden-app");
-            document.getElementById("activeUser").textContent = AUTH_EMAIL;
+            document.getElementById("activeUser").textContent = TARGET_EMAIL;
         }
     </script>
 </body>
